@@ -38,7 +38,7 @@ describe("Month 클래스 테스트", () => {
     const startDay = "월";
 
     const days = [1, 2, 3, 4, 5, 6, 7];
-    const types = ["W", "W", "W", "W", "H", "H", "H"];
+    const types = ["W", "W", "W", "W", "WH", "H", "H"];
 
     days.forEach((day, idx) => {
       const month = new Month(currentMonth, startDay);
