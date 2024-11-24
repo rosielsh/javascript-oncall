@@ -25,4 +25,15 @@ describe("WeekDayWorker 클래스 테스트", () => {
       expect(() => new WeekDayWorker(worker)).toThrow("[ERROR]");
     });
   });
+
+  test("평일 비상근무 사원은 최소 5명 ~ 최대 35명 가능하다", () => {
+    const workers = [
+      Array.from({ length: 40 }, (_, idx) => `루루_${idx}`),
+      Array.from({ length: 2 }, (_, idx) => `루루_${idx}`),
+    ];
+
+    workers.forEach((worker) => {
+      expect(() => new WeekDayWorker(worker)).toThrow("[ERROR]");
+    });
+  });
 });
