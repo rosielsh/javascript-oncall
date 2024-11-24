@@ -32,4 +32,18 @@ describe("Month 클래스 테스트", () => {
       expect(() => new Month(1, dayofWeek)).toThrow("[ERROR]");
     });
   });
+
+  test("해당 일이 평일인지 휴일인지 알 수 있다", () => {
+    const currentMonth = 5;
+    const startDay = "월";
+
+    const days = [1, 2, 3, 4, 5, 6, 7];
+    const types = ["W", "W", "W", "W", "H", "H", "H"];
+
+    days.forEach((day, idx) => {
+      const month = new Month(currentMonth, startDay);
+
+      expect(month.getDayType(day)).toEqual(types[idx]);
+    });
+  });
 });
