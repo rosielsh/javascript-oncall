@@ -16,4 +16,20 @@ describe("Month 클래스 테스트", () => {
       expect(() => new Month(month, "월")).toThrow("[ERROR]");
     });
   });
+
+  test("요일은 월~일 사이의 문자로 입력할 수 있다", () => {
+    const dayofWeeks = ["월", "화", "수", "목", "금", "토", "일"];
+
+    dayofWeeks.forEach((dayofWeek) => {
+      expect(() => new Month(1, dayofWeek)).not.toThrow();
+    });
+  });
+
+  test("요일은 월~일 사이의 문자가 아니면 에러가 발생한다", () => {
+    const dayofWeeks = ["윌", "MON", "월월", 0, 12, undefined, NaN, null, {}, []];
+
+    dayofWeeks.forEach((dayofWeek) => {
+      expect(() => new Month(1, dayofWeek)).toThrow("[ERROR]");
+    });
+  });
 });
