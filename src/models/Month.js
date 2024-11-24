@@ -23,7 +23,7 @@ class Month {
     StartDayValidator.validate(startDay);
     this.#month = month;
     this.#startDay = startDay;
-    this.#setDateType(startDay);
+    this.#setDateType(this.#startDay);
   }
 
   #setDateType(startDay) {
@@ -59,10 +59,18 @@ class Month {
     }
   }
 
+  getDayOfMonth() {
+    return Month.DAY_OF_MONTH[this.#month];
+  }
+
   // 평일 근무자가 나가야하는지 휴일 근무자가 나가야 하는지 알 수 있음
   getDayType(day) {
     const currentType = this.#dayType[(day - 1) % 7];
-    if (Month.PUPLIC_HOLIDAYS[this.#month].includes(day) || currentType === 0) {
+    if (Month.PUPLIC_HOLIDAYS[this.#month] && Month.PUPLIC_HOLIDAYS[this.#month].includes(day)) {
+      return "WH";
+    }
+
+    if (currentType === 0) {
       return "H";
     }
 
