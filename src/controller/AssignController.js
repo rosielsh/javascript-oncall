@@ -20,15 +20,13 @@ class AssignController {
 
   async assign() {
     const [month, startDay] = await this.#getMonthInfo();
-    const monthInfo = new Month(month, startDay);
-
     const [weekDayWorkers, dayOffWorkers] = await this.#getWorkers();
 
+    const monthInfo = new Month(month, startDay);
     const weekDayWorker = new WeekDayWorker(weekDayWorkers);
     const dayOffWorker = new DayOffWorker(dayOffWorkers);
 
     const assignedWorkers = WorkAssignMent.from(monthInfo, weekDayWorker, dayOffWorker);
-
     this.#outputView.printEmergencySchedule(month, startDay, assignedWorkers.getAssignedInfo());
   }
 
@@ -62,16 +60,13 @@ class AssignController {
   async #processWorkers() {
     const weekDayWorker = await this.#inputView.readWeekDayWorker();
     const weekDayWorkerArr = InputParser.parseInput(weekDayWorker);
-
     WorkersValidator.validate(weekDayWorkerArr);
 
     const dayOffWorker = await this.#inputView.readDayOffWorker();
     const dayOffWorkerArr = InputParser.parseInput(dayOffWorker);
-
     WorkersValidator.validate(dayOffWorkerArr);
 
     InputValidator.checkTotalWorkers(weekDayWorkerArr, dayOffWorkerArr);
-
     return [weekDayWorkerArr, dayOffWorkerArr];
   }
 }

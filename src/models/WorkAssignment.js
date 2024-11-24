@@ -11,24 +11,24 @@ class WorkAssignMent {
     const totalDay = month.getDayOfMonth(); // 현재 달의 전체 일수
 
     Array.from({ length: totalDay }, (_, idx) => idx + 1).forEach((currentDay) => {
-      // currentDay : 현재 날짜
-      // currentType : 현재 날짜가 평일인지 공휴일인지 W or H or WH(평일인데 공휴일)
       const currentType = month.getDayType(currentDay);
 
-      // 평일 이라면
       if (currentType === "W") {
         const currentWorker = weekDayWorker.getCurrentWorker();
 
-        if (assigned.length > 0 && assigned.at(-1)[1] === currentWorker) {
+        if (this.#isContinuous(currentWorker, assigned)) {
           if (weekDayWorker.isExistPrevChangedOrder()) {
             const prev = weekDayWorker.getPreviousChangedOrder();
             assigned.push([currentType, prev]);
-          } else {
+
+            weekDayWorker.pushChangedOrder(currentWorker);
             weekDayWorker.possibleWorker();
-            const next = weekDayWorker.getCurrentWorker();
-            assigned.push([currentType, next]);
+            return;
           }
 
+          weekDayWorker.possibleWorker();
+          const next = weekDayWorker.getCurrentWorker();
+          assigned.push([currentType, next]);
           weekDayWorker.pushChangedOrder(currentWorker);
           weekDayWorker.possibleWorker();
           return;
@@ -37,39 +37,41 @@ class WorkAssignMent {
         if (weekDayWorker.isExistPrevChangedOrder()) {
           const prev = weekDayWorker.getPreviousChangedOrder();
           assigned.push([currentType, prev]);
-        } else {
-          assigned.push([currentType, currentWorker]);
-          weekDayWorker.possibleWorker();
-        }
-      }
-      // 공휴일 이라면
-      else {
-        const currentWorker = dayOffWorker.getCurrentWorker();
-
-        if (assigned.length > 0 && assigned.at(-1)[1] === currentWorker) {
-          if (dayOffWorker.isExistPrevChangedOrder()) {
-            const prev = dayOffWorker.getPreviousChangedOrder();
-            assigned.push([currentType, prev]);
-          } else {
-            dayOffWorker.possibleWorker();
-            const next = dayOffWorker.getCurrentWorker();
-            assigned.push([currentType, next]);
-          }
-
-          dayOffWorker.pushChangedOrder(currentWorker);
-          dayOffWorker.possibleWorker();
-
           return;
         }
 
+        assigned.push([currentType, currentWorker]);
+        weekDayWorker.possibleWorker();
+
+        return;
+      }
+      // 공휴일 이라면
+      const currentWorker = dayOffWorker.getCurrentWorker();
+
+      if (this.#isContinuous(currentWorker, assigned)) {
         if (dayOffWorker.isExistPrevChangedOrder()) {
           const prev = dayOffWorker.getPreviousChangedOrder();
           assigned.push([currentType, prev]);
-        } else {
-          assigned.push([currentType, currentWorker]);
+          dayOffWorker.pushChangedOrder(currentWorker);
           dayOffWorker.possibleWorker();
+          return;
         }
+
+        dayOffWorker.possibleWorker();
+        const next = dayOffWorker.getCurrentWorker();
+        assigned.push([currentType, next]);
+        dayOffWorker.pushChangedOrder(currentWorker);
+        dayOffWorker.possibleWorker();
       }
+
+      if (dayOffWorker.isExistPrevChangedOrder()) {
+        const prev = dayOffWorker.getPreviousChangedOrder();
+        assigned.push([currentType, prev]);
+        return;
+      }
+
+      assigned.push([currentType, currentWorker]);
+      dayOffWorker.possibleWorker();
     });
 
     return new WorkAssignMent(assigned);
@@ -77,6 +79,10 @@ class WorkAssignMent {
 
   getAssignedInfo() {
     return this.#assignedWorkers;
+  }
+
+  static #isContinuous(currentWorker, assigned) {
+    return assigned.length > 0 && assigned.at(-1)[1] === currentWorker;
   }
 }
 

@@ -3,7 +3,7 @@ import WorkersValidator from "../validators/WorkersValidator.js";
 class WeekDayWorker {
   #workers;
   #processPointer; // 현재까지 근무한 사람을 파악하기 위한 포인터
-  #previousChangedOrders; // 순서를 바꾼 사람을 저장하는 스택
+  #previousChangedOrders; // 순서를 바꾼 사람을 저장하는 배열
 
   constructor(workers) {
     WorkersValidator.validate(workers);
@@ -29,7 +29,7 @@ class WeekDayWorker {
   }
 
   getPreviousChangedOrder() {
-    return this.#previousChangedOrders.pop();
+    return this.#previousChangedOrders.shift();
   }
 
   pushChangedOrder(worker) {
